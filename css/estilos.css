@@ -1,0 +1,248 @@
+/* css/estilos.css · Agencia D.M
+   Estilos simples: fondo claro, barra azul oscura y botones verdes. */
+
+/* Todos los elementos cuentan el padding dentro de su ancho */
+* {
+    box-sizing: border-box;
+}
+
+/* Estilo general de la página */
+body {
+    margin: 0;                            /* saca el margen que trae el navegador */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #222;
+    background-color: #f1f4f8;            /* gris muy claro */
+}
+
+/* ---------- Barra de arriba ---------- */
+header {
+    background-color: #12263f;            /* azul oscuro */
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;                        /* pone el título y el menú en una fila */
+    justify-content: space-between;       /* uno a cada lado */
+    align-items: center;
+    flex-wrap: wrap;                      /* en pantallas chicas pasa a otra línea */
+    gap: 10px;
+}
+
+.logo {
+    margin: 0;
+    font-size: 24px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 14px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Contenido ---------- */
+.contenedor {
+    max-width: 1000px;                    /* ancho máximo */
+    margin: 0 auto;                       /* centrado */
+    padding: 25px 15px;
+    min-height: 70vh;
+}
+
+.tarjeta {
+    background-color: #fff;
+    border: 1px solid #d5dbe4;
+    border-radius: 6px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.tarjeta-form {
+    max-width: 500px;                     /* los formularios son más angostos */
+    margin: 0 auto 20px auto;
+}
+
+.centrado {
+    text-align: center;
+}
+
+/* ---------- Imágenes ---------- */
+.banner {
+    width: 100%;                          /* ocupa todo el ancho disponible */
+    height: 260px;
+    object-fit: cover;                    /* recorta la imagen sin deformarla */
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.foto-perfil {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;                   /* la hace redonda */
+    border: 3px solid #d5dbe4;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* ---------- Formularios ---------- */
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 9px;
+    font-size: 15px;
+    border: 1px solid #aab4c3;
+    border-radius: 4px;
+}
+
+/* ---------- Botones ---------- */
+button,
+.boton {
+    display: inline-block;
+    background-color: #1a7f3c;            /* verde */
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+button:hover,
+.boton:hover {
+    background-color: #156a32;
+}
+
+.boton-gris {
+    background-color: #6c7787;
+}
+
+.boton-gris:hover {
+    background-color: #566070;
+}
+
+.boton-rojo {
+    background-color: #b3261e;
+}
+
+.boton-rojo:hover {
+    background-color: #8c1c15;
+}
+
+.boton-chico {
+    padding: 5px 10px;
+    font-size: 13px;
+    margin-top: 0;
+}
+
+/* Formulario dentro de una celda: que no ocupe una línea aparte */
+.en-linea {
+    display: inline;
+}
+
+/* ---------- Mensajes ---------- */
+.exito {
+    background-color: #e3f5e8;
+    color: #145a2a;
+    border: 1px solid #8fd1a1;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.error,
+.errores {
+    background-color: #fde8e7;
+    color: #8c1c15;
+    border: 1px solid #eba4a0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.errores {
+    padding-left: 30px;                   /* espacio para los puntos de la lista */
+}
+
+.aviso {
+    background-color: #fff4d6;
+    color: #6b5200;
+    border: 1px solid #e6c870;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* ---------- Tablas ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;            /* une los bordes de las celdas */
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #d5dbe4;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #12263f;
+    color: #fff;
+}
+
+/* En el buscador: campo y botones en una fila */
+.buscador {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.buscador input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
+
+.buscador button,
+.buscador .boton {
+    margin-top: 0;
+}
+
+.logo a {
+    color: #fff;              
+    text-decoration: none;  
+}
+
+.jugadores { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 15px; }
+.jugador { flex: 1 1 200px; max-width: 240px; border: 1px solid #d5dbe4; border-radius: 6px; padding: 12px; background-color: #f7f9fb; }
+.jugador img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; }
+.jugador h3 { margin: 10px 0 6px 0; font-size: 18px; }
+.jugador p { margin: 3px 0; font-size: 14px; }
+
+/* ---------- Pie de página ---------- */
+footer {
+    background-color: #12263f;
+    color: #b8c4d6;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+}
+
+/* ---------- Tablas anchas en el celular: scroll horizontal ---------- */
+@media (max-width: 700px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
