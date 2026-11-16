@@ -1,20 +1,15 @@
 <?php
-// panel.php
-// Panel personal: muestra los datos del usuario que inició sesión.
-// Es una página privada: si no hay sesión, redirige al login.
 
 session_start(); // retoma la sesión que se creó en login.php
 
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/escapar.php';
 
-// Si no existe usuario_id en la sesión, la persona no inició sesión
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php'); // la mandamos al login
-    exit;                          // y cortamos el programa
+    header('Location: login.php'); 
+    exit;                          
 }
 
-// Buscamos los datos del usuario en la base (nunca pedimos la contraseña ni el hash)
 $sql = 'SELECT nombre, apellido, dni, email, rol, creado_en
         FROM usuarios
         WHERE id = :id AND archivado_en IS NULL
@@ -23,7 +18,6 @@ $stmt = $conexion->prepare($sql);
 $stmt->execute(['id' => $_SESSION['usuario_id']]); // el id sale de la sesión, no de la URL
 $usuario = $stmt->fetch();
 
-// Si no se encuentra (por ejemplo, la cuenta fue archivada), cerramos la sesión
 if ($usuario === false) {
     session_destroy();
     header('Location: login.php');
