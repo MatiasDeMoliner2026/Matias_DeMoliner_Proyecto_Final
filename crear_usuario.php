@@ -1,14 +1,11 @@
 <?php
-// crear_usuario.php
-// Alta de usuarios desde el panel administrativo.
-// A diferencia del registro público, acá el administrador SÍ puede elegir el rol.
 
 session_start();
 
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/escapar.php';
 
-// ----- Control de acceso (igual que en admin_usuarios.php) -----
+
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -23,11 +20,11 @@ $nombre = '';
 $apellido = '';
 $dni = '';
 $email = '';
-$rol = 'usuario'; // valor que aparece seleccionado por defecto
+$rol = 'usuario';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Comprobamos el token CSRF: tiene que ser igual al que guardamos en la sesión al iniciar sesión
+   
     $token = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'], $token)) {
         http_response_code(403);
@@ -67,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'Las contraseñas no coinciden.';
     }
 
-    // ----- Guardar -----
+
     if (empty($errores)) {
         try {
             $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -83,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'rol' => $rol
             ]);
 
-            // Dejamos un mensaje en la sesión y volvemos al listado
+
             $_SESSION['mensaje'] = 'Usuario creado correctamente.';
             header('Location: admin_usuarios.php');
             exit;
@@ -131,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form action="crear_usuario.php" method="POST">
-                <!-- Campo oculto con el token CSRF -->
+            
                 <input type="hidden" name="csrf_token" value="<?= escapar($_SESSION['csrf_token']) ?>">
 
                 <label for="nombre">Nombre</label>
