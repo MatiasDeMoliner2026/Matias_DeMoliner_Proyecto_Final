@@ -42,7 +42,7 @@ if ($buscar !== '') {
 }
 $usuarios = $stmt->fetchAll(); 
 ?>
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
