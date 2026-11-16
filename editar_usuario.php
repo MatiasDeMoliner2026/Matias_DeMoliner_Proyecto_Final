@@ -1,14 +1,12 @@
 <?php
-// editar_usuario.php
-// Permite al administrador editar nombre, apellido, DNI y correo de un usuario activo.
-// El id del usuario llega por la URL: editar_usuario.php?id=5
+
 
 session_start();
 
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/escapar.php';
 
-// ----- Control de acceso -----
+
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -18,15 +16,13 @@ if ($_SESSION['usuario_rol'] !== 'admin') {
     exit('Acceso denegado: esta sección es solo para administradores. <a href="panel.php">Volver</a>');
 }
 
-// ----- Validamos el id recibido por la URL -----
-// FILTER_VALIDATE_INT comprueba que sea un número entero; min_range 1 evita 0 y negativos
+
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (!$id) { // si no es válido, filter_input devuelve false o null
     http_response_code(400); // 400 = solicitud incorrecta
     exit('Identificador inválido. <a href="admin_usuarios.php">Volver</a>');
 }
 
-// ----- Buscamos al usuario en la base (solo si está activo) -----
 $stmt = $conexion->prepare('SELECT id, nombre, apellido, dni, email FROM usuarios WHERE id = :id AND archivado_en IS NULL');
 $stmt->execute(['id' => $id]);
 $usuario = $stmt->fetch();
@@ -37,7 +33,6 @@ if ($usuario === false) { // no existe o está archivado
 }
 
 $errores = [];
-// Al entrar por primera vez, el formulario muestra los datos actuales de la base
 $nombre = $usuario['nombre'];
 $apellido = $usuario['apellido'];
 $dni = $usuario['dni'];
@@ -45,20 +40,20 @@ $email = $usuario['email'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Token CSRF
+
     $token = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'], $token)) {
         http_response_code(403);
         exit('Solicitud no autorizada (token inválido).');
     }
 
-    // Reemplazamos los valores por lo que se escribió en el formulario
+
     $nombre = trim($_POST['nombre'] ?? '');
     $apellido = trim($_POST['apellido'] ?? '');
     $dni = trim($_POST['dni'] ?? '');
     $email = trim($_POST['email'] ?? '');
 
-    // ----- Validaciones -----
+
     if ($nombre === '') {
         $errores[] = 'El nombre es obligatorio.';
     }
@@ -72,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'Ingresá un correo válido.';
     }
 
-    // ----- Actualizar -----
+
     if (empty($errores)) {
         try {
             $sql = 'UPDATE usuarios
@@ -91,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: admin_usuarios.php');
             exit;
         } catch (PDOException $e) {
-            if ($e->getCode() === '23000') { // el DNI o el correo ya pertenecen a otro usuario
+            if ($e->getCode() === '23000') { 
                 $errores[] = 'El DNI o el correo electrónico ya pertenecen a otro usuario.';
             } else {
                 error_log($e->getMessage());
@@ -133,7 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </ul>
             <?php endif; ?>
 
-            <!-- (int) $id asegura que en la URL solo haya un número -->
             <form action="editar_usuario.php?id=<?= (int) $id ?>" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= escapar($_SESSION['csrf_token']) ?>">
 
