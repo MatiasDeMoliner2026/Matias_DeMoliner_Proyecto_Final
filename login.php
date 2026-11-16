@@ -1,53 +1,46 @@
 <?php
-// login.php
-// Inicio de sesión con correo y contraseña.
 
-session_start(); // activa las sesiones: nos permite guardar datos del usuario entre páginas
+session_start(); 
+require_once __DIR__ . '/conexion.php'; 
+require_once __DIR__ . '/escapar.php';  
 
-require_once __DIR__ . '/conexion.php'; // trae $conexion
-require_once __DIR__ . '/escapar.php';  // trae escapar()
+$error = ''; 
+$email = '';  
 
-$error = '';  // mensaje de error (vacío si todo va bien)
-$email = '';  // para volver a mostrar el correo escrito
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { // solo si se envió el formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if ($email === '' || $password === '') {
         $error = 'Ingresá tu correo y tu contraseña.';
     } else {
-        // Buscamos al usuario por correo. archivado_en IS NULL = solo cuentas activas
+      
         $sql = 'SELECT id, nombre, password_hash, rol
                 FROM usuarios
                 WHERE email = :email AND archivado_en IS NULL
                 LIMIT 1';
         $stmt = $conexion->prepare($sql);
         $stmt->execute(['email' => $email]);
-        $usuario = $stmt->fetch(); // devuelve la fila, o false si no encontró nada
+        $usuario = $stmt->fetch();
 
-        // password_verify compara la contraseña escrita con el hash guardado en la base
         if ($usuario !== false && password_verify($password, $usuario['password_hash'])) {
 
-            session_regenerate_id(true); // cambia el ID de sesión por seguridad al iniciar sesión
+            session_regenerate_id(true);
 
-            // Guardamos en la sesión los datos que necesitan las otras páginas
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['usuario_nombre'] = $usuario['nombre'];
             $_SESSION['usuario_rol'] = $usuario['rol'];
 
-            // Token CSRF: un código secreto que van a llevar los formularios del panel admin
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-            // Redirigimos según el rol
             if ($usuario['rol'] === 'admin') {
-                header('Location: admin_usuarios.php'); // el admin va a su panel
+                header('Location: admin_usuarios.php'); 
             } else {
-                header('Location: panel.php');          // el usuario común va al suyo
+                header('Location: panel.php');          
             }
-            exit; // después de redirigir hay que cortar el programa
+            exit;
         } else {
-            // Mismo mensaje para correo inexistente o contraseña mala (no damos pistas)
+        
             $error = 'Correo o contraseña incorrectos.';
         }
     }
