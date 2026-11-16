@@ -1,46 +1,38 @@
 <?php
-// admin_usuarios.php
-// Panel administrativo: lista los usuarios ACTIVOS y tiene un buscador.
-// Solo pueden entrar los administradores.
 
-session_start(); // retomamos la sesión creada en login.php
+session_start(); 
 
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/escapar.php';
 
-// ----- Control de acceso -----
-// 1) Si no inició sesión, lo mandamos al login
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
-// 2) Si inició sesión pero no es admin, mostramos error 403 (acceso prohibido)
+
 if ($_SESSION['usuario_rol'] !== 'admin') {
     http_response_code(403);
     exit('Acceso denegado: esta sección es solo para administradores. <a href="panel.php">Volver</a>');
 }
 
-// ----- Mensaje que dejó otra página (por ejemplo "Usuario archivado") -----
-$mensaje = $_SESSION['mensaje'] ?? ''; // lo leemos...
-unset($_SESSION['mensaje']);           // ...y lo borramos para que se muestre una sola vez
+$mensaje = $_SESSION['mensaje'] ?? ''; 
+unset($_SESSION['mensaje']);       
 
-// ----- Buscador -----
-// filter_input lee el valor de la URL (?buscar=...). trim saca espacios sobrantes.
 $buscar = trim(filter_input(INPUT_GET, 'buscar') ?? '');
 
 if ($buscar !== '') {
-    // Hay búsqueda: filtramos por nombre, apellido, DNI, correo o nombre completo
+    
     $sql = "SELECT id, nombre, apellido, dni, email, rol, creado_en
             FROM usuarios
             WHERE archivado_en IS NULL
               AND (nombre LIKE :b1 OR apellido LIKE :b2 OR dni LIKE :b3
                    OR email LIKE :b4 OR CONCAT(nombre, ' ', apellido) LIKE :b5)
             ORDER BY apellido, nombre";
-    $termino = '%' . $buscar . '%'; // los % significan "cualquier texto antes y después"
+    $termino = '%' . $buscar . '%';
     $stmt = $conexion->prepare($sql);
     $stmt->execute(['b1' => $termino, 'b2' => $termino, 'b3' => $termino, 'b4' => $termino, 'b5' => $termino]);
 } else {
-    // No hay búsqueda: mostramos todos los usuarios activos
+    
     $sql = 'SELECT id, nombre, apellido, dni, email, rol, creado_en
             FROM usuarios
             WHERE archivado_en IS NULL
@@ -48,9 +40,9 @@ if ($buscar !== '') {
     $stmt = $conexion->prepare($sql);
     $stmt->execute();
 }
-$usuarios = $stmt->fetchAll(); // trae todas las filas como un array
+$usuarios = $stmt->fetchAll(); 
 ?>
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
