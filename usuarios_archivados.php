@@ -6,7 +6,6 @@ session_start();
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/escapar.php';
 
-// ----- Control de acceso -----
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -16,11 +15,9 @@ if ($_SESSION['usuario_rol'] !== 'admin') {
     exit('Acceso denegado: esta sección es solo para administradores. <a href="panel.php">Volver</a>');
 }
 
-// Mensaje que dejó otra página (se muestra una sola vez)
 $mensaje = $_SESSION['mensaje'] ?? '';
 unset($_SESSION['mensaje']);
 
-// Archivados = los que tienen una fecha en archivado_en (IS NOT NULL). El más reciente primero.
 $sql = 'SELECT id, nombre, apellido, dni, email, rol, archivado_en
         FROM usuarios
         WHERE archivado_en IS NOT NULL
@@ -75,7 +72,7 @@ $archivados = $stmt->fetchAll();
                             <td><?= escapar($u['rol']) ?></td>
                             <td><?= escapar($u['archivado_en']) ?></td>
                             <td>
-                                <!-- Reactivar: formulario POST con token CSRF -->
+                              
                                 <form action="reactivar_usuario.php" method="POST" class="en-linea"
                                       onsubmit="return confirm('¿Reactivar a este usuario?');">
                                     <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
